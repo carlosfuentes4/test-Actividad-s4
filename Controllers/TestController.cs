@@ -12,11 +12,11 @@ namespace ProyectoS4.Controllers
 
     public class TestController : Controller
     {      
-        //prueba David
+       
      
             private readonly FirebaseService _firebaseService;
             private readonly ILogger<TestController> _logger;       
-                //test Tita
+             
 
             /*
              * Constructor: ASP.NET Core inyecta FirabaseService automaticamente
