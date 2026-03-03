@@ -8,13 +8,15 @@ using Timestamp = Google.Cloud.Firestore.Timestamp;
 namespace ProyectoS4.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]")]             
 
     public class TestController : Controller
     {      
+       
      
             private readonly FirebaseService _firebaseService;
-            private readonly ILogger<TestController> _logger;
+            private readonly ILogger<TestController> _logger;       
+             
 
             /*
              * Constructor: ASP.NET Core inyecta FirabaseService automaticamente
