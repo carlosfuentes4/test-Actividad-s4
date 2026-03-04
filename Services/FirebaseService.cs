@@ -70,9 +70,9 @@ public class FirebaseService
              * Sin esto, Google no sabe a que proyecto consumir
              */
             Environment.SetEnvironmentVariable(
-                "GOOGLE_APPLICATION_CRENDENTIALS",
-                credentialsPath
-                );
+            "GOOGLE_APPLICATION_CREDENTIALS",
+            credentialsPath
+             );
 
             /*
              * Paso 5: Inicializar FB SDK
