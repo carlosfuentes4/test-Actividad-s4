@@ -1,4 +1,4 @@
-﻿using ProyectoS4.Models;
+using ProyectoS4.Models;
 
 namespace ProyectoS4.DTO;
 
