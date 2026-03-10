@@ -1,6 +1,5 @@
-﻿using Google.Cloud.Firestore;
-using Microsoft.AspNetCore.Mvc;
-using ProyectoS4.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using ProyectoS4.DTOs;
 using ProyectoS4.Services;
 
 namespace ProyectoS4.Controllers;
@@ -9,38 +8,32 @@ namespace ProyectoS4.Controllers;
 [Route("api/users")]
 public class UserController : ControllerBase
 {
-    private readonly FirebaseService _firebaseService;
+    private readonly IUserService _userService;
 
-    public UserController(FirebaseService firebaseService)
+    public UserController(IUserService userService)
     {
-        _firebaseService = firebaseService;
+        _userService = userService;
     }
 
-    // POST: api/users
-    [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] UserModel user)
-    {
-        //  Las validaciones las maneja automáticamente el [ApiController]
-        user.FechaCreacion = DateTime.UtcNow;
-
-        var docRef = _firebaseService.GetCollection("users").Document(user.IdUser);
-        await docRef.SetAsync(user); 
-        //  No más Dictionary manual
-
-        return Ok(new { message = "Usuario creado", id = user.IdUser });
-    }
-
-    // GET: api/users
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
-        var snapshot = await _firebaseService.GetCollection("users").GetSnapshotAsync();
-
-        //  No más mapeo manual
-        var users = snapshot.Documents
-            .Select(doc => doc.ConvertTo<UserModel>())
-            .ToList();
-
+        var users = await _userService.GetAllUsers();
         return Ok(users);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUserById(string id)
+    {
+        var user = await _userService.GetUserById(id);
+        if (user == null) return NotFound("Usuario no encontrado.");
+        return Ok(user);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateUser([FromBody] UserDto dto)
+    {
+        var user = await _userService.CreateUser(dto);
+        return Ok(new { message = "Usuario creado", id = user.IdUser });
     }
 }

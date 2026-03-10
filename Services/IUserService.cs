@@ -11,8 +11,6 @@ public interface IUserService
     // GET por id
     Task<UserModel> CreateUser(UserDto dto);   
     // POST crear
-    Task<UserModel> UpdateUser(string userId, UserDto dto); 
-    // PUT actualizar
-    Task DeleteUser(string userId);            
-    // DELETE eliminar
+
+    
 }
