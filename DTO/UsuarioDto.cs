@@ -7,14 +7,14 @@ namespace ProyectoS4.DTO;
 /// </summary>
 public class UsuarioDto
 {
-    /// <summary>Identificador único del usuario.</summary>
+    /// <summary> Identificador único del usuario.</summary>
     public string IdUser { get; set; } = string.Empty;
 
     /// <summary>Correo electrónico único para autenticación y contacto.</summary>
     public string Correo { get; set; } = string.Empty;
     public string Contraseña { get; set; } = string.Empty;
 
-    /// <summary>Nombre completo del usuario.</summary>s
+    /// <summary>Nombre completo del usuario </summary>s
     public string NombreCompleto { get; set; } = string.Empty;
 
     /// <summary>Rol del usuario: Manager (gerente) o Guest (huésped).</summary>
