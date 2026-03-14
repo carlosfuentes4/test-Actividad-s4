@@ -43,7 +43,7 @@ public class RoomService : IRoomService
         if (!document.Exists)
             return null;
 
-        var room = document.ConvertTo<RoomModel>();
+        var room = document.ConvertTo<HabitacionDto>();
 
         return new HabitacionDto
         {
@@ -55,7 +55,7 @@ public class RoomService : IRoomService
         };
     }
 
-    public async Task<RoomModel> CreateRoom(RoomModel room)
+    public async Task<HabitacionDto> CreateRoom(HabitacionDto room)
     {
         var collection = _firebase.GetCollection("Rooms");
 
@@ -64,7 +64,7 @@ public class RoomService : IRoomService
         return room;
     }
 
-    public async Task<RoomModel> UpdateRoom(string roomId, RoomModel room)
+    public async Task<HabitacionDto> UpdateRoom(string roomId, HabitacionDto room)
     {
         var collection = _firebase.GetCollection("Rooms");
 
