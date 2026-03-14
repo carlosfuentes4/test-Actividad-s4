@@ -12,6 +12,7 @@ public class UsuarioDto
 
     /// <summary>Correo electrónico único para autenticación y contacto.</summary>
     public string Correo { get; set; } = string.Empty;
+    public string Contraseña { get; set; } = string.Empty;
 
     /// <summary>Nombre completo del usuario.</summary>s
     public string NombreCompleto { get; set; } = string.Empty;
