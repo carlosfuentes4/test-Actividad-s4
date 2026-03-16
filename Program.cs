@@ -2,9 +2,10 @@ using ProyectoS4.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Servicios de infraestructura y dominio
 builder.Services.AddSingleton<FirebaseService>();
-
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
