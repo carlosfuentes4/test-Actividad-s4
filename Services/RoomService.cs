@@ -1,5 +1,5 @@
 using Google.Cloud.Firestore;
-using ProyectoS4.DTOs;
+using ProyectoS4.DTO;
 using ProyectoS4.Models;
 
 namespace ProyectoS4.Services;
@@ -24,7 +24,7 @@ public class RoomService : IRoomService
     /// <summary>
     /// Obtiene todas las habitaciones en formato DTO para exponer al frontend.
     /// </summary>
-    public async Task<List<RoomDto>> GetAllRooms()
+    public async Task<List<HabitacionDto>> GetRooms()
     {
         var snapshot = await _firebaseService
             .GetCollection("rooms")
@@ -41,7 +41,7 @@ public class RoomService : IRoomService
     /// <summary>
     /// Obtiene una habitación específica por id. Devuelve null si no existe.
     /// </summary>
-    public async Task<RoomDto?> GetRoomById(string roomId)
+    public async Task<HabitacionDto?> GetRoomById(string roomId)
     {
         var docRef = _firebaseService.GetCollection("rooms").Document(roomId);
         var snapshot = await docRef.GetSnapshotAsync();
@@ -55,7 +55,7 @@ public class RoomService : IRoomService
     /// <summary>
     /// Crea una habitación nueva en Firestore a partir de un DTO.
     /// </summary>
-    public async Task<RoomModel> CreateRoom(RoomDto dto)
+    public async Task<RoomModel> CreateRoom(HabitacionDto dto)
     {
         var room = new RoomModel
         {
@@ -90,7 +90,7 @@ public class RoomService : IRoomService
     /// <summary>
     /// Actualiza una habitación existente. Lanza excepción si no existe.
     /// </summary>
-    public async Task<RoomModel> UpdateRoom(string roomId, RoomDto dto)
+    public async Task<RoomModel> UpdateRoom(string roomId, HabitacionDto dto)
     {
         var collection = _firebaseService.GetCollection("rooms");
         var docRef = collection.Document(roomId);
@@ -226,9 +226,9 @@ public class RoomService : IRoomService
         return null;
     }
 
-    private static RoomDto MapToDto(RoomModel model)
+    private static HabitacionDto MapToDto(RoomModel model)
     {
-        return new RoomDto
+        return new HabitacionDto
         {
             IdHabitacion = model.IdHabitacion,
             NumeroHabitacion = model.NumeroHabitacion,

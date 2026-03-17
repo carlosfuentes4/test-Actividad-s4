@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using ProyectoS4.DTOs;
+using ProyectoS4.DTO;
 using ProyectoS4.Services;
 
 namespace ProyectoS4.Controllers;
@@ -24,7 +24,7 @@ public class RoomController : ControllerBase
     /// Endpoint: POST api/rooms
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> CreateRoom([FromBody] RoomDto dto)
+    public async Task<IActionResult> CreateRoom([FromBody] HabitacionDto dto)
     {
         var room = await _roomService.CreateRoom(dto);
         return Ok(new
@@ -41,7 +41,7 @@ public class RoomController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetRooms()
     {
-        var rooms = await _roomService.GetAllRooms();
+        var rooms = await _roomService.GetRooms();
         return Ok(rooms);
     }
 
@@ -62,7 +62,7 @@ public class RoomController : ControllerBase
     /// Endpoint: PUT api/rooms/{id}
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateRoom(string id, [FromBody] RoomDto dto)
+    public async Task<IActionResult> UpdateRoom(string id, [FromBody] HabitacionDto dto)
     {
         try
         {
