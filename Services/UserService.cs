@@ -12,7 +12,7 @@ public class UserService : IUserService
         _firebaseService = firebaseService;
     }
 
-    public async Task<List<UserDto>> GetAllUsers()
+    public async Task<List<UsuarioDto>> GetAllUsers()
     {
         var snapshot = await _firebaseService.GetCollection("users").GetSnapshotAsync();
 
@@ -20,11 +20,11 @@ public class UserService : IUserService
             .Select(doc =>
             {
                 var model = doc.ConvertTo<UserModel>();
-                var dto = new UserDto
+                var dto = new UsuarioDto
                 {
                     IdUser = model.IdUser,
-                    FullName = model.NombreCompleto,
-                    Email = model.Correo,
+                    NombreCompleto = model.NombreCompleto,
+                    Correo = model.Correo,
                     Rol = model.Rol.ToString(),
                     Telefono = model.Telefono ?? ""
                 };
@@ -35,7 +35,7 @@ public class UserService : IUserService
         return users;
     }
 
-    public async Task<UserDto?> GetUserById(string userId)
+    public async Task<UsuarioDto?> GetUserById(string userId)
     {
         var docRef = _firebaseService.GetCollection("users").Document(userId);
         var snapshot = await docRef.GetSnapshotAsync();
@@ -43,11 +43,11 @@ public class UserService : IUserService
         if (!snapshot.Exists) return null;
 
         var model = snapshot.ConvertTo<UserModel>();
-        var dto = new UserDto
+        var dto = new UsuarioDto
         {
             IdUser = model.IdUser,
-            FullName = model.NombreCompleto,
-            Email = model.Correo,
+            NombreCompleto = model.NombreCompleto,
+            Correo = model.Correo,
             Rol = model.Rol.ToString(),
             Telefono = model.Telefono ?? ""
         };
@@ -55,13 +55,13 @@ public class UserService : IUserService
         return dto;
     }
 
-    public async Task<UserModel> CreateUser(UserDto dto)
+    public async Task<UserModel> CreateUser(UsuarioDto dto)
     {
         var user = new UserModel
         {
             IdUser = string.IsNullOrWhiteSpace(dto.IdUser) ? Guid.NewGuid().ToString() : dto.IdUser,
-            NombreCompleto = dto.FullName,
-            Correo = dto.Email,
+            NombreCompleto = dto.NombreCompleto,
+            Correo = dto.Correo,
             Rol = Enum.Parse<UserRole>(dto.Rol),
             Telefono = dto.Telefono,
             FechaCreacion = DateTime.UtcNow,
@@ -72,5 +72,15 @@ public class UserService : IUserService
         await docRef.SetAsync(user);
 
         return user;
+    }
+
+    Task<UsuarioDto?> IUserService.GetUserById(string userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<UserModel> CreateUsuario(UsuarioDto dto)
+    {
+        throw new NotImplementedException();
     }
 }

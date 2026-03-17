@@ -18,7 +18,7 @@ public class UsuarioDto
     public string NombreCompleto { get; set; } = string.Empty;
 
     /// <summary>Rol del usuario: Manager (gerente) o Guest (huésped).</summary>
-    public UserRole Rol { get; set; }
+    public string Rol { get; set; } = string.Empty;
 
     /// <summary>Teléfono de contacto (opcional).</summary>
     public string? Telefono { get; set; }
