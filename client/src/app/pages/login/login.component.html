@@ -21,6 +21,7 @@
         <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
         <button mat-flat-button color="primary" type="submit" class="full-width submit-btn" [disabled]="loading">
           <mat-spinner *ngIf="loading" diameter="24" class="btn-spinner"></mat-spinner>
+          <mat-icon *ngIf="!loading" class="login-icon" aria-hidden="true">login</mat-icon>
           <span *ngIf="!loading">Iniciar sesión</span>
         </button>
       </form>
