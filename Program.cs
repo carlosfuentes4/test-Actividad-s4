@@ -4,6 +4,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Servicios de infraestructura y dominio
 builder.Services.AddSingleton<FirebaseService>();
+builder.Services.AddScoped<AnalyticsService>();
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddControllers();
