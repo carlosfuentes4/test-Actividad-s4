@@ -55,7 +55,7 @@ public class RoomService : IRoomService
     /// <summary>
     /// Crea una habitación nueva en Firestore a partir de un DTO.
     /// </summary>
-    public async Task<RoomModel> CreateRoom(HabitacionDto dto)
+    public async Task<HabitacionDto> CreateRoom(HabitacionDto dto)
     {
         var room = new RoomModel
         {
@@ -66,9 +66,7 @@ public class RoomService : IRoomService
             TipoHabitacion = dto.TipoHabitacion,
             Capacidad = dto.Capacidad,
             PrecioPorNoche = dto.PrecioPorNoche,
-            Estado = Enum.TryParse<RoomStatus>(dto.Estado, out var estadoParsed)
-                ? estadoParsed
-                : RoomStatus.Disponible,
+            Estado = dto.Estado,
             Descripcion = dto.Descripcion,
             Activo = true,
             FechaCreacion = DateTime.UtcNow,
@@ -84,13 +82,13 @@ public class RoomService : IRoomService
 
         _logger.LogInformation("Habitación creada en Firestore con Id {Id}", room.IdHabitacion);
 
-        return room;
+        return MapToDto(room);
     }
 
     /// <summary>
     /// Actualiza una habitación existente. Lanza excepción si no existe.
     /// </summary>
-    public async Task<RoomModel> UpdateRoom(string roomId, HabitacionDto dto)
+    public async Task<HabitacionDto> UpdateRoom(string roomId, HabitacionDto dto)
     {
         var collection = _firebaseService.GetCollection("rooms");
         var docRef = collection.Document(roomId);
@@ -108,16 +106,14 @@ public class RoomService : IRoomService
         model.Capacidad = dto.Capacidad;
         model.PrecioPorNoche = dto.PrecioPorNoche;
         model.Descripcion = dto.Descripcion;
-        model.Estado = Enum.TryParse<RoomStatus>(dto.Estado, out var estadoParsed)
-            ? estadoParsed
-            : model.Estado;
+        model.Estado = dto.Estado;
         model.FechaActualizacion = DateTime.UtcNow;
 
         await docRef.SetAsync(ToFirestoreMap(model), SetOptions.Overwrite);
 
         _logger.LogInformation("Habitación {Id} actualizada en Firestore", roomId);
 
-        return model;
+        return MapToDto (model);
     }
 
     /// <summary>
@@ -235,7 +231,7 @@ public class RoomService : IRoomService
             TipoHabitacion = model.TipoHabitacion,
             Capacidad = model.Capacidad,
             PrecioPorNoche = model.PrecioPorNoche,
-            Estado = model.Estado.ToString(),
+            Estado = model.Estado,
             Descripcion = model.Descripcion ?? string.Empty
         };
     }
