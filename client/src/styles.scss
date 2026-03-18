@@ -6,7 +6,7 @@
 $probook-primary: mat.m2-define-palette(mat.$m2-indigo-palette, 700, 500, 900);
 $probook-accent: mat.m2-define-palette(mat.$m2-amber-palette, A400, A200, A700);
 $probook-warn: mat.m2-define-palette(mat.$m2-red-palette);
-$probook-theme: mat.m2-define-light-theme((
+$probook-theme: mat.m2-define-dark-theme((
   color: (
     primary: $probook-primary,
     accent: $probook-accent,
@@ -22,4 +22,6 @@ html, body {
   height: 100%;
   margin: 0;
   font-family: 'DM Sans', sans-serif;
+  background: #121212;
+  color: #e0e0e0;
 }

@@ -8,6 +8,7 @@ export interface UsuarioMini {
   correo: string;
   nombreCompleto: string;
   rol: number; // UserRole: 0=Manager, 1=Invitado
+  telefono?: string;
 }
 
 @Injectable({ providedIn: 'root' })
