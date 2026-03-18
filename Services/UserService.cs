@@ -73,14 +73,4 @@ public class UserService : IUserService
 
         return user;
     }
-
-    Task<UsuarioDto?> IUserService.GetUserById(string userId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UserModel> CreateUsuario(UsuarioDto dto)
-    {
-        throw new NotImplementedException();
-    }
 }
