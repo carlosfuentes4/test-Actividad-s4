@@ -1,5 +1,5 @@
 using Google.Cloud.Firestore;
-using ProyectoS4.DTOs;
+using ProyectoS4.DTO;
 using ProyectoS4.Models;
 
 namespace ProyectoS4.Services;
@@ -24,7 +24,7 @@ public class RoomService : IRoomService
     /// <summary>
     /// Obtiene todas las habitaciones en formato DTO para exponer al frontend.
     /// </summary>
-    public async Task<List<RoomDto>> GetAllRooms()
+    public async Task<List<HabitacionDto>> GetRooms()
     {
         var snapshot = await _firebaseService
             .GetCollection("rooms")
@@ -41,7 +41,7 @@ public class RoomService : IRoomService
     /// <summary>
     /// Obtiene una habitación específica por id. Devuelve null si no existe.
     /// </summary>
-    public async Task<RoomDto?> GetRoomById(string roomId)
+    public async Task<HabitacionDto?> GetRoomById(string roomId)
     {
         var docRef = _firebaseService.GetCollection("rooms").Document(roomId);
         var snapshot = await docRef.GetSnapshotAsync();
@@ -55,7 +55,7 @@ public class RoomService : IRoomService
     /// <summary>
     /// Crea una habitación nueva en Firestore a partir de un DTO.
     /// </summary>
-    public async Task<RoomModel> CreateRoom(RoomDto dto)
+    public async Task<HabitacionDto> CreateRoom(HabitacionDto dto)
     {
         var room = new RoomModel
         {
@@ -66,9 +66,7 @@ public class RoomService : IRoomService
             TipoHabitacion = dto.TipoHabitacion,
             Capacidad = dto.Capacidad,
             PrecioPorNoche = dto.PrecioPorNoche,
-            Estado = Enum.TryParse<RoomStatus>(dto.Estado, out var estadoParsed)
-                ? estadoParsed
-                : RoomStatus.Disponible,
+            Estado = dto.Estado,
             Descripcion = dto.Descripcion,
             Activo = true,
             FechaCreacion = DateTime.UtcNow,
@@ -84,13 +82,13 @@ public class RoomService : IRoomService
 
         _logger.LogInformation("Habitación creada en Firestore con Id {Id}", room.IdHabitacion);
 
-        return room;
+        return MapToDto(room);
     }
 
     /// <summary>
     /// Actualiza una habitación existente. Lanza excepción si no existe.
     /// </summary>
-    public async Task<RoomModel> UpdateRoom(string roomId, RoomDto dto)
+    public async Task<HabitacionDto> UpdateRoom(string roomId, HabitacionDto dto)
     {
         var collection = _firebaseService.GetCollection("rooms");
         var docRef = collection.Document(roomId);
@@ -108,16 +106,14 @@ public class RoomService : IRoomService
         model.Capacidad = dto.Capacidad;
         model.PrecioPorNoche = dto.PrecioPorNoche;
         model.Descripcion = dto.Descripcion;
-        model.Estado = Enum.TryParse<RoomStatus>(dto.Estado, out var estadoParsed)
-            ? estadoParsed
-            : model.Estado;
+        model.Estado = dto.Estado;
         model.FechaActualizacion = DateTime.UtcNow;
 
         await docRef.SetAsync(ToFirestoreMap(model), SetOptions.Overwrite);
 
         _logger.LogInformation("Habitación {Id} actualizada en Firestore", roomId);
 
-        return model;
+        return MapToDto(model);
     }
 
     /// <summary>
@@ -226,17 +222,20 @@ public class RoomService : IRoomService
         return null;
     }
 
-    private static RoomDto MapToDto(RoomModel model)
+    private static HabitacionDto MapToDto(RoomModel model)
     {
-        return new RoomDto
+        return new HabitacionDto
         {
             IdHabitacion = model.IdHabitacion,
             NumeroHabitacion = model.NumeroHabitacion,
             TipoHabitacion = model.TipoHabitacion,
             Capacidad = model.Capacidad,
             PrecioPorNoche = model.PrecioPorNoche,
-            Estado = model.Estado.ToString(),
-            Descripcion = model.Descripcion ?? string.Empty
+            Estado = model.Estado,
+            Descripcion = model.Descripcion ?? string.Empty,
+            Activo = model.Activo,
+            FechaCreacion = model.FechaCreacion,
+            FechaActualizacion = model.FechaActualizacion
         };
     }
 }

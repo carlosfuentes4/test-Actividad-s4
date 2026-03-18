@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ProyectoS4.Services;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Timestamp = Google.Cloud.Firestore.Timestamp;
 
 
@@ -9,7 +10,7 @@ namespace ProyectoS4.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]             
-
+    [Authorize]
     public class TestController : Controller
     {      
        

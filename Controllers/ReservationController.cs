@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Google.Cloud.Firestore;
 using ProyectoS4.Models;
 using ProyectoS4.Services;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 namespace ProyectoS4.Controllers;
 
     [ApiController]
+[Authorize]
     [Route("api/reservations")]
   public class ReservationController : ControllerBase
 {

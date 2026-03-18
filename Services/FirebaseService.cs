@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder.Extensions;
+using Microsoft.AspNetCore.Builder.Extensions;
 using System.Text.Json.Serialization;
 using Google.Cloud.Firestore;
 using FirebaseAdmin;
@@ -165,7 +165,7 @@ public class FirebaseService
          * Es como un apuntador a la coleccion
          * 
          */
-        return _firestoreDb.Collection("collectionName");
+        return _firestoreDb.Collection(collectionName);
 
     }
 }

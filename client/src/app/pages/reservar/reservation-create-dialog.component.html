@@ -1,0 +1,100 @@
+<h2 mat-dialog-title>
+  <mat-icon>event</mat-icon>
+  Crear reservación
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="grid-2">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Habitación</mat-label>
+        <mat-select formControlName="idHabitacion">
+          <mat-option *ngFor="let r of rooms" [value]="r.idHabitacion">
+            {{ r.numeroHabitacion }} ({{ r.tipoHabitacion }})
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('idHabitacion')?.hasError('required')">
+          Selecciona una habitación.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Huésped</mat-label>
+        <mat-select formControlName="idHuesped">
+          <mat-option *ngFor="let u of users" [value]="u.idUser">
+            {{ u.nombreCompleto }} ({{ u.correo }})
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('idHuesped')?.hasError('required')">
+          Selecciona un huésped.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="grid-2">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Fecha entrada</mat-label>
+        <input matInput type="datetime-local" formControlName="fechaEntrada" />
+        <mat-error *ngIf="form.get('fechaEntrada')?.hasError('required')">
+          Requerido.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Fecha salida</mat-label>
+        <input matInput type="datetime-local" formControlName="fechaSalida" />
+        <mat-error *ngIf="form.get('fechaSalida')?.hasError('required')">
+          Requerido.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="grid-2">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="estado">
+          @for (e of estados; track e.value) {
+            <mat-option [value]="e.value">{{ e.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Número de huéspedes</mat-label>
+        <input matInput type="number" formControlName="numeroHuespedes" />
+      </mat-form-field>
+    </div>
+
+    <div class="grid-2">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Monto total</mat-label>
+        <input matInput type="number" formControlName="montoTotal" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Moneda</mat-label>
+        <input matInput formControlName="moneda" />
+      </mat-form-field>
+    </div>
+
+    <mat-checkbox formControlName="pagoConfirmado">Pago confirmado</mat-checkbox>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Solicitudes especiales</mat-label>
+      <input matInput formControlName="solicitudesEspeciales" placeholder="Ej: cama extra, alergias..." />
+    </mat-form-field>
+
+    <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="actions">
+      <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="loading">
+        Cancelar
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="loading">
+        <mat-spinner *ngIf="loading" diameter="18"></mat-spinner>
+        <span *ngIf="!loading">Crear</span>
+      </button>
+    </div>
+  </form>
+</mat-dialog-content>
+
