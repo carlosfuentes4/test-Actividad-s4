@@ -8,6 +8,17 @@ export interface UsuarioMini {
   correo: string;
   nombreCompleto: string;
   rol: number; // UserRole: 0=Manager, 1=Invitado
+  telefono?: string;
+}
+
+/** Payload para POST /api/users (crear usuario). idUser se omite; el backend lo genera. */
+export interface CreateUserPayload {
+  correo: string;
+  contraseña: string;
+  nombreCompleto: string;
+  rol: number; // 0=Manager, 1=Invitado
+  telefono?: string;
+  activo: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -21,6 +32,11 @@ export class UsersService {
     const token = this.getToken();
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
     return this.http.get<UsuarioMini[]>(this.apiUrl, { headers });
+  }
+
+  /** Crea un usuario (POST /api/users, endpoint AllowAnonymous). */
+  createUser(payload: CreateUserPayload): Observable<{ message: string; id: string }> {
+    return this.http.post<{ message: string; id: string }>(this.apiUrl, payload);
   }
 
   private getToken(): string | null {

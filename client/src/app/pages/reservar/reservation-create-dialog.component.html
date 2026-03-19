@@ -13,6 +13,7 @@
             {{ r.numeroHabitacion }} ({{ r.tipoHabitacion }})
           </mat-option>
         </mat-select>
+        <mat-hint *ngIf="lockGuestAndRoom">Seleccionada desde la lista de habitaciones</mat-hint>
         <mat-error *ngIf="form.get('idHabitacion')?.hasError('required')">
           Selecciona una habitación.
         </mat-error>
@@ -25,6 +26,7 @@
             {{ u.nombreCompleto }} ({{ u.correo }})
           </mat-option>
         </mat-select>
+        <mat-hint *ngIf="lockGuestAndRoom">Usuario actual</mat-hint>
         <mat-error *ngIf="form.get('idHuesped')?.hasError('required')">
           Selecciona un huésped.
         </mat-error>
@@ -34,7 +36,13 @@
     <div class="grid-2">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Fecha entrada</mat-label>
-        <input matInput type="datetime-local" formControlName="fechaEntrada" />
+        <input
+          matInput
+          [matDatepicker]="pickerEntrada"
+          formControlName="fechaEntrada"
+        />
+        <mat-datepicker-toggle matSuffix [for]="pickerEntrada"></mat-datepicker-toggle>
+        <mat-datepicker #pickerEntrada></mat-datepicker>
         <mat-error *ngIf="form.get('fechaEntrada')?.hasError('required')">
           Requerido.
         </mat-error>
@@ -42,7 +50,13 @@
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Fecha salida</mat-label>
-        <input matInput type="datetime-local" formControlName="fechaSalida" />
+        <input
+          matInput
+          [matDatepicker]="pickerSalida"
+          formControlName="fechaSalida"
+        />
+        <mat-datepicker-toggle matSuffix [for]="pickerSalida"></mat-datepicker-toggle>
+        <mat-datepicker #pickerSalida></mat-datepicker>
         <mat-error *ngIf="form.get('fechaSalida')?.hasError('required')">
           Requerido.
         </mat-error>
@@ -88,10 +102,12 @@
 
     <div class="actions">
       <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="loading">
+        <mat-icon aria-hidden="true" class="btn-icon">close</mat-icon>
         Cancelar
       </button>
       <button mat-flat-button color="primary" type="submit" [disabled]="loading">
         <mat-spinner *ngIf="loading" diameter="18"></mat-spinner>
+        <mat-icon *ngIf="!loading" aria-hidden="true" class="btn-icon">check</mat-icon>
         <span *ngIf="!loading">Crear</span>
       </button>
     </div>

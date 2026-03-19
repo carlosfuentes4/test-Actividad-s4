@@ -51,6 +51,18 @@ export class RoomsService {
     return this.http.post<CreateRoomResponse>(this.apiUrl, payload, { headers });
   }
 
+  updateRoom(id: string, payload: HabitacionCrearRequest): Observable<CreateRoomResponse> {
+    const token = this.getToken();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.put<CreateRoomResponse>(`${this.apiUrl}/${id}`, payload, { headers });
+  }
+
+  deleteRoom(id: string): Observable<{ message: string; id: string }> {
+    const token = this.getToken();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.delete<{ message: string; id: string }>(`${this.apiUrl}/${id}`, { headers });
+  }
+
   private getToken(): string | null {
     const stored = localStorage.getItem(this.storageKey);
     if (!stored) return null;

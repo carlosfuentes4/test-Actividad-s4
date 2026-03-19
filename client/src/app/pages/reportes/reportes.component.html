@@ -1,0 +1,84 @@
+<mat-card class="reports-card">
+  <mat-card-header>
+    <mat-card-title>Reportes</mat-card-title>
+    <mat-card-subtitle>Resumen y ganancias por mes</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="loading" *ngIf="loading">
+      <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
+    </div>
+
+    <p class="error-msg" *ngIf="!loading && errorMessage">{{ errorMessage }}</p>
+
+    <ng-container *ngIf="!loading && analytics as a">
+      <div class="stats-grid">
+        <mat-card class="stat-card">
+          <div class="stat-label">Total Reservas</div>
+          <div class="stat-value">{{ a.totalReservas }}</div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-label">Reservas Activas</div>
+          <div class="stat-value">{{ a.reservasActivas }}</div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-label">Reservas Canceladas</div>
+          <div class="stat-value">{{ a.reservasCanceladas }}</div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-label">Reservas Completadas</div>
+          <div class="stat-value">{{ a.reservasCompletadas }}</div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-label">Ingresos Totales (HNL)</div>
+          <div class="stat-value">{{ formatMoney(a.ingresosTotales) }}</div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-label">Ingresos del Mes (HNL)</div>
+          <div class="stat-value">{{ formatMoney(a.ingresosMes) }}</div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-label">Total Habitaciones</div>
+          <div class="stat-value">{{ a.totalHabitaciones }}</div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-label">Habitaciones Ocupadas</div>
+          <div class="stat-value">{{ a.habitacionesOcupadas }}</div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-label">Porcentaje Ocupación</div>
+          <div class="stat-value">{{ a.porcentajeOcupacion }}%</div>
+        </mat-card>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">Ganancias por Mes</h3>
+
+        <div class="bar-chart" *ngIf="a.tendenciaMensual?.length; else emptyChart">
+          <div class="bar-item" *ngFor="let item of a.tendenciaMensual">
+            <div
+              class="bar"
+              [style.height.%]="maxIngresosMes ? (item.ingresos / maxIngresosMes) * 100 : 0"
+              [title]="item.mes + ': ' + formatMoney(item.ingresos) + ' HNL'"
+            ></div>
+            <div class="bar-label">{{ item.mes }}</div>
+            <div class="bar-value">{{ formatMoney(item.ingresos) }}</div>
+          </div>
+        </div>
+
+        <ng-template #emptyChart>
+          <p class="empty-msg">No hay datos suficientes para mostrar la gráfica.</p>
+        </ng-template>
+      </div>
+    </ng-container>
+  </mat-card-content>
+</mat-card>
+

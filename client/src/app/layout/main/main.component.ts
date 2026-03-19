@@ -14,8 +14,11 @@ export interface SidebarItem {
   label: string;
   route: string;
   icon: string;
-  roles?: ('Manager' | 'Invitado')[]; // si está definido, solo se muestra para esos roles
 }
+
+// Rol 0 = Gerente (menú completo sin "Reservar" para invitados). Rol 1 = Invitado (solo Dashboard y Reservar).
+const ROUTES_ROL_1 = ['/main/dashboard', '/main/reservar-habitacion'];
+const ROUTE_RESERVAR_HABITACION = '/main/reservar-habitacion';
 
 @Component({
   selector: 'app-main',
@@ -39,13 +42,13 @@ export class MainComponent {
   sidenavOpened = true;
   sidenavMode: MatDrawerMode = 'side';
 
-  // Opciones del sidebar según PDF: Gerente (Dashboard, Habitaciones, Huéspedes, Reportes) y Huésped (Dashboard, Reservar, etc.)
   sidebarItems: SidebarItem[] = [
     { label: 'Dashboard', route: '/main/dashboard', icon: 'dashboard' },
-    { label: 'Habitaciones', route: '/main/habitaciones', icon: 'meeting_room', roles: ['Manager'] },
-    { label: 'Huéspedes', route: '/main/huespedes', icon: 'people', roles: ['Manager'] },
-    { label: 'Reportes', route: '/main/reportes', icon: 'bar_chart', roles: ['Manager'] },
-    { label: 'Reservar', route: '/main/reservar', icon: 'event_available', roles: ['Invitado'] },
+    { label: 'Habitaciones', route: '/main/habitaciones', icon: 'meeting_room' },
+    { label: 'Huéspedes', route: '/main/huespedes', icon: 'people' },
+    { label: 'Reportes', route: '/main/reportes', icon: 'bar_chart' },
+    { label: 'Reservar', route: '/main/reservar-habitacion', icon: 'add_calendar' },
+    { label: 'Reservaciones', route: '/main/reservar', icon: 'event_available' },
   ];
 
   toggleSidenav(): void {
@@ -57,9 +60,35 @@ export class MainComponent {
     public authService: AuthService
   ) {}
 
-  // Por ahora mostramos todas las opciones; luego se filtra por rol cuando exista AuthService
+  private parseRol(raw: unknown): number {
+    if (raw === null || raw === undefined) return 0;
+    if (typeof raw === 'number') return raw;
+
+    if (typeof raw === 'string') {
+      const trimmed = raw.trim();
+      const lowered = trimmed.toLowerCase();
+
+      // Soportar rol como número en string.
+      const asNumber = Number(trimmed);
+      if (!Number.isNaN(asNumber)) return asNumber;
+
+      // Soportar rol como texto (backend o frontend).
+      if (lowered.includes('invita') || lowered.includes('invit')) return 1;
+      if (lowered.includes('hué') || lowered.includes('huesp') || lowered.includes('huésped')) return 1;
+      if (lowered.includes('manager') || lowered.includes('gerent')) return 0;
+    }
+
+    return 0;
+  }
+
   get visibleItems(): SidebarItem[] {
-    return this.sidebarItems;
+    const user = this.authService.currentUser();
+    const rol = this.parseRol(user?.rol);
+    if (rol === 1) {
+      return this.sidebarItems.filter((item) => ROUTES_ROL_1.includes(item.route));
+    }
+    // Rol 0 (Gerente): todo menos la vista "Reservar" (solo para invitados).
+    return this.sidebarItems.filter((item) => item.route !== ROUTE_RESERVAR_HABITACION);
   }
 
   logout(): void {

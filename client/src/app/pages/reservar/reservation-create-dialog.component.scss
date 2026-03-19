@@ -24,3 +24,10 @@
   margin-top: 16px;
 }
 
+// El panel de MatDatepicker se renderiza en un overlay global (CDK).
+// En algunos layouts dentro de MatDialog puede quedar por debajo.
+:host ::ng-deep .mat-mdc-datepicker-panel,
+:host ::ng-deep .cdk-overlay-pane {
+  z-index: 10000 !important;
+}
+

@@ -5,10 +5,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { RoomsService, Habitacion } from '../../services/rooms.service';
 import { RoomCreateDialogComponent } from './room-create-dialog.component';
+import { RoomDeleteConfirmDialogComponent, RoomDeleteConfirmData } from './room-delete-confirm-dialog.component';
 
 @Component({
   selector: 'app-habitaciones',
@@ -20,6 +22,7 @@ import { RoomCreateDialogComponent } from './room-create-dialog.component';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
   ],
   templateUrl: './habitaciones.component.html',
   styleUrl: './habitaciones.component.scss',
@@ -36,6 +39,7 @@ export class HabitacionesComponent implements OnInit {
     'precioPorNoche',
     'estado',
     'descripcion',
+    'acciones',
   ];
 
   constructor(
@@ -87,6 +91,43 @@ export class HabitacionesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((res) => {
       if (res) this.loadRooms();
+    });
+  }
+
+  openEditDialog(room: Habitacion): void {
+    const dialogRef = this.dialog.open(RoomCreateDialogComponent, {
+      width: '720px',
+      disableClose: true,
+      data: { room },
+    });
+
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) this.loadRooms();
+    });
+  }
+
+  openDeleteConfirmDialog(room: Habitacion): void {
+    const data: RoomDeleteConfirmData = {
+      title: 'Eliminar habitación',
+      message: '¿Está seguro de que desea eliminar esta habitación?',
+      roomNumber: room.numeroHabitacion,
+    };
+
+    const dialogRef = this.dialog.open(RoomDeleteConfirmDialogComponent, {
+      width: '400px',
+      data,
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.roomsService.deleteRoom(room.idHabitacion).subscribe({
+          next: () => this.loadRooms(),
+          error: (err) => {
+            this.errorMessage =
+              err?.error?.message ?? err?.message ?? 'No se pudo eliminar la habitación.';
+          },
+        });
+      }
     });
   }
 }

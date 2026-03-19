@@ -9,7 +9,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 
-import { RoomsService } from '../../services/rooms.service';
+import { RoomsService, Habitacion } from '../../services/rooms.service';
+
+export interface RoomCreateDialogData {
+  room?: Habitacion;
+}
 
 type EstadoHabitacion = 0 | 1 | 2 | 3;
 
@@ -34,6 +38,8 @@ export class RoomCreateDialogComponent {
   form: FormGroup;
   loading = false;
   errorMessage = '';
+  isEditMode = false;
+  editRoomId: string | null = null;
 
   // Mapeo igual al enum RoomStatus del backend.
   estados: { value: EstadoHabitacion; label: string }[] = [
@@ -46,7 +52,7 @@ export class RoomCreateDialogComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<RoomCreateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: unknown,
+    @Inject(MAT_DIALOG_DATA) public data: RoomCreateDialogData | unknown,
     private roomsService: RoomsService
   ) {
     this.form = this.fb.group({
@@ -58,6 +64,21 @@ export class RoomCreateDialogComponent {
       estado: [0 as EstadoHabitacion, [Validators.required]],
       descripcion: [''],
     });
+
+    const payload = data && typeof data === 'object' && 'room' in data ? (data as RoomCreateDialogData).room : null;
+    if (payload) {
+      this.isEditMode = true;
+      this.editRoomId = payload.idHabitacion;
+      this.form.patchValue({
+        idHabitacion: payload.idHabitacion,
+        numeroHabitacion: payload.numeroHabitacion,
+        tipoHabitacion: payload.tipoHabitacion,
+        capacidad: payload.capacidad,
+        precioPorNoche: payload.precioPorNoche,
+        estado: payload.estado,
+        descripcion: payload.descripcion ?? '',
+      });
+    }
   }
 
   onCancel(): void {
@@ -72,26 +93,41 @@ export class RoomCreateDialogComponent {
     }
 
     this.loading = true;
-    const payload = this.form.value as any;
-    // Para no mandar campos vacíos.
-    if (payload.idHabitacion === '') payload.idHabitacion = undefined;
-    // Asegurar tipos numéricos (por compatibilidad con value accessors).
-    payload.capacidad = Number(payload.capacidad);
-    payload.precioPorNoche = Number(payload.precioPorNoche);
+    const raw = this.form.value as any;
+    const payload = {
+      numeroHabitacion: raw.numeroHabitacion,
+      tipoHabitacion: raw.tipoHabitacion,
+      capacidad: Number(raw.capacidad),
+      precioPorNoche: Number(raw.precioPorNoche),
+      estado: raw.estado,
+      descripcion: raw.descripcion ?? '',
+    };
 
-    this.roomsService.createRoom(payload).subscribe({
-      next: (res) => {
-        this.loading = false;
-        this.dialogRef.close(res);
-      },
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage =
-          err?.error?.message ??
-          err?.message ??
-          'No se pudo crear la habitación.';
-      },
-    });
+    if (this.isEditMode && this.editRoomId) {
+      this.roomsService.updateRoom(this.editRoomId, payload).subscribe({
+        next: (res) => {
+          this.loading = false;
+          this.dialogRef.close(res);
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage =
+            err?.error?.message ?? err?.message ?? 'No se pudo actualizar la habitación.';
+        },
+      });
+    } else {
+      this.roomsService.createRoom(payload).subscribe({
+        next: (res) => {
+          this.loading = false;
+          this.dialogRef.close(res);
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage =
+            err?.error?.message ?? err?.message ?? 'No se pudo crear la habitación.';
+        },
+      });
+    }
   }
 }
 

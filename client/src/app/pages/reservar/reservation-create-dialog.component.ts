@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -13,6 +15,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RoomsService, Habitacion } from '../../services/rooms.service';
 import { UsersService, UsuarioMini } from '../../services/users.service';
 import { ReservationsService } from '../../services/reservations.service';
+import { UsuarioLogueado } from '../../services/auth.service';
+
+export interface ReservationCreateDialogData {
+  room?: Habitacion;
+  guest?: UsuarioLogueado;
+}
 
 type EstadoReserva = 0 | 1 | 2 | 3 | 4 | 5;
 
@@ -27,9 +35,29 @@ type EstadoReserva = 0 | 1 | 2 | 3 | 4 | 5;
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatProgressSpinnerModule,
     MatIconModule,
     MatCheckboxModule,
+  ],
+  providers: [
+    // Mostrar fechas en el input con el formato requerido por el proyecto.
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
+        parse: {
+          dateInput: 'dd/MM/yyyy',
+        },
+        display: {
+          dateInput: 'dd/MM/yyyy',
+          monthYearLabel: 'MMM yyyy',
+          dateA11y: 'dd/MM/yyyy',
+          monthYearA11y: 'MMMM yyyy',
+        },
+      },
+    },
   ],
   templateUrl: './reservation-create-dialog.component.html',
   styleUrl: './reservation-create-dialog.component.scss',
@@ -40,6 +68,9 @@ export class ReservationCreateDialogComponent {
 
   rooms: Habitacion[] = [];
   users: UsuarioMini[] = [];
+
+  /** Cuando es true, habitación y huésped vienen predefinidos (vista invitado) y se muestran bloqueados. */
+  lockGuestAndRoom = false;
 
   // Mapeo igual al enum ReservationStatus del backend.
   estados: { value: EstadoReserva; label: string }[] = [
@@ -56,17 +87,21 @@ export class ReservationCreateDialogComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ReservationCreateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: unknown,
+    @Inject(MAT_DIALOG_DATA) public data: ReservationCreateDialogData | unknown,
     private roomsService: RoomsService,
     private usersService: UsersService,
     private reservationsService: ReservationsService
   ) {
+    const today = new Date();
+    const entradaDefault = this.startOfDay(today);
+    const salidaDefault = this.endOfDay(today);
+
     this.form = this.fb.group({
       idReservacion: [''],
       idHabitacion: ['', [Validators.required]],
       idHuesped: ['', [Validators.required]],
-      fechaEntrada: ['', [Validators.required]],
-      fechaSalida: ['', [Validators.required]],
+      fechaEntrada: [entradaDefault, [Validators.required]],
+      fechaSalida: [salidaDefault, [Validators.required]],
       estado: [0 as EstadoReserva, [Validators.required]],
       numeroHuespedes: [1, [Validators.required, Validators.min(1)]],
       montoTotal: [0, [Validators.required, Validators.min(0)]],
@@ -75,7 +110,28 @@ export class ReservationCreateDialogComponent {
       solicitudesEspeciales: [''],
     });
 
-    this.initSelects();
+    const payload = data && typeof data === 'object' && 'room' in data && 'guest' in data
+      ? (data as ReservationCreateDialogData)
+      : null;
+
+    if (payload?.room && payload?.guest) {
+      this.lockGuestAndRoom = true;
+      this.rooms = [payload.room];
+      this.users = [{
+        idUser: payload.guest.id,
+        correo: payload.guest.email,
+        nombreCompleto: payload.guest.nombreCompleto,
+        rol: 1,
+      }];
+      this.form.patchValue({
+        idHabitacion: payload.room.idHabitacion,
+        idHuesped: payload.guest.id,
+      });
+      this.form.get('idHabitacion')?.disable();
+      this.form.get('idHuesped')?.disable();
+    } else {
+      this.initSelects();
+    }
   }
 
   private initSelects(): void {
@@ -104,10 +160,16 @@ export class ReservationCreateDialogComponent {
     this.dialogRef.close(false);
   }
 
-  private toIso(value: string): string {
-    // value viene de datetime-local: "YYYY-MM-DDTHH:mm"
-    const d = new Date(value);
-    return isNaN(d.getTime()) ? value : d.toISOString();
+  private startOfDay(d: Date): Date {
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    return x;
+  }
+
+  private endOfDay(d: Date): Date {
+    const x = new Date(d);
+    x.setHours(23, 59, 59, 999);
+    return x;
   }
 
   onSubmit(): void {
@@ -117,15 +179,15 @@ export class ReservationCreateDialogComponent {
       return;
     }
 
-    const raw = this.form.value as any;
+    const raw = this.form.getRawValue() as any; // getRawValue incluye campos deshabilitados
 
     // Payload con nombres en camelCase (por namingPolicy del backend).
     const payload = {
       idReservacion: raw.idReservacion?.trim() || undefined,
       idHabitacion: raw.idHabitacion,
       idHuesped: raw.idHuesped,
-      fechaEntrada: this.toIso(raw.fechaEntrada),
-      fechaSalida: this.toIso(raw.fechaSalida),
+      fechaEntrada: this.startOfDay(new Date(raw.fechaEntrada)).toISOString(),
+      fechaSalida: this.endOfDay(new Date(raw.fechaSalida)).toISOString(),
       estado: Number(raw.estado),
       numeroHuespedes: Number(raw.numeroHuespedes),
       montoTotal: Number(raw.montoTotal),
