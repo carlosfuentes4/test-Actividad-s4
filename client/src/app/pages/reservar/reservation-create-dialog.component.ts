@@ -15,6 +15,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RoomsService, Habitacion } from '../../services/rooms.service';
 import { UsersService, UsuarioMini } from '../../services/users.service';
 import { ReservationsService } from '../../services/reservations.service';
+import { UsuarioLogueado } from '../../services/auth.service';
+
+export interface ReservationCreateDialogData {
+  room?: Habitacion;
+  guest?: UsuarioLogueado;
+}
 
 type EstadoReserva = 0 | 1 | 2 | 3 | 4 | 5;
 
@@ -63,6 +69,9 @@ export class ReservationCreateDialogComponent {
   rooms: Habitacion[] = [];
   users: UsuarioMini[] = [];
 
+  /** Cuando es true, habitación y huésped vienen predefinidos (vista invitado) y se muestran bloqueados. */
+  lockGuestAndRoom = false;
+
   // Mapeo igual al enum ReservationStatus del backend.
   estados: { value: EstadoReserva; label: string }[] = [
     { value: 0, label: 'Pendiente' },
@@ -78,7 +87,7 @@ export class ReservationCreateDialogComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ReservationCreateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: unknown,
+    @Inject(MAT_DIALOG_DATA) public data: ReservationCreateDialogData | unknown,
     private roomsService: RoomsService,
     private usersService: UsersService,
     private reservationsService: ReservationsService
@@ -101,7 +110,28 @@ export class ReservationCreateDialogComponent {
       solicitudesEspeciales: [''],
     });
 
-    this.initSelects();
+    const payload = data && typeof data === 'object' && 'room' in data && 'guest' in data
+      ? (data as ReservationCreateDialogData)
+      : null;
+
+    if (payload?.room && payload?.guest) {
+      this.lockGuestAndRoom = true;
+      this.rooms = [payload.room];
+      this.users = [{
+        idUser: payload.guest.id,
+        correo: payload.guest.email,
+        nombreCompleto: payload.guest.nombreCompleto,
+        rol: 1,
+      }];
+      this.form.patchValue({
+        idHabitacion: payload.room.idHabitacion,
+        idHuesped: payload.guest.id,
+      });
+      this.form.get('idHabitacion')?.disable();
+      this.form.get('idHuesped')?.disable();
+    } else {
+      this.initSelects();
+    }
   }
 
   private initSelects(): void {
@@ -149,7 +179,7 @@ export class ReservationCreateDialogComponent {
       return;
     }
 
-    const raw = this.form.value as any;
+    const raw = this.form.getRawValue() as any; // getRawValue incluye campos deshabilitados
 
     // Payload con nombres en camelCase (por namingPolicy del backend).
     const payload = {

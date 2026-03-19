@@ -1,0 +1,65 @@
+<mat-card class="rooms-card">
+  <mat-card-header>
+    <mat-card-title>Reservar</mat-card-title>
+    <mat-card-subtitle>Habitaciones disponibles para reservar</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="loading" *ngIf="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <div class="table-wrapper" *ngIf="!loading && dataSource.data.length > 0">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z1">
+        <ng-container matColumnDef="numeroHabitacion">
+          <th mat-header-cell *matHeaderCellDef>Número</th>
+          <td mat-cell *matCellDef="let row">{{ row.numeroHabitacion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoHabitacion">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let row">{{ row.tipoHabitacion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="capacidad">
+          <th mat-header-cell *matHeaderCellDef>Capacidad</th>
+          <td mat-cell *matCellDef="let row">{{ row.capacidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="precioPorNoche">
+          <th mat-header-cell *matHeaderCellDef>Precio/Noche</th>
+          <td mat-cell *matCellDef="let row">{{ row.precioPorNoche }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let row">{{ estadoLabel(row.estado) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef>Descripción</th>
+          <td mat-cell *matCellDef="let row">{{ row.descripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-flat-button color="primary" (click)="openReservarDialog(row)" type="button">
+              <mat-icon>info</mat-icon>
+              Ver más detalles
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <p class="empty-msg" *ngIf="!loading && dataSource.data.length === 0">
+      No hay habitaciones disponibles en este momento.
+    </p>
+  </mat-card-content>
+</mat-card>

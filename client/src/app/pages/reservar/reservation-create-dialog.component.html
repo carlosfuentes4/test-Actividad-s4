@@ -13,6 +13,7 @@
             {{ r.numeroHabitacion }} ({{ r.tipoHabitacion }})
           </mat-option>
         </mat-select>
+        <mat-hint *ngIf="lockGuestAndRoom">Seleccionada desde la lista de habitaciones</mat-hint>
         <mat-error *ngIf="form.get('idHabitacion')?.hasError('required')">
           Selecciona una habitación.
         </mat-error>
@@ -25,6 +26,7 @@
             {{ u.nombreCompleto }} ({{ u.correo }})
           </mat-option>
         </mat-select>
+        <mat-hint *ngIf="lockGuestAndRoom">Usuario actual</mat-hint>
         <mat-error *ngIf="form.get('idHuesped')?.hasError('required')">
           Selecciona un huésped.
         </mat-error>
@@ -34,7 +36,11 @@
     <div class="grid-2">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Fecha entrada</mat-label>
-        <input matInput [matDatepicker]="pickerEntrada" formControlName="fechaEntrada" />
+        <input
+          matInput
+          [matDatepicker]="pickerEntrada"
+          formControlName="fechaEntrada"
+        />
         <mat-datepicker-toggle matSuffix [for]="pickerEntrada"></mat-datepicker-toggle>
         <mat-datepicker #pickerEntrada></mat-datepicker>
         <mat-error *ngIf="form.get('fechaEntrada')?.hasError('required')">
@@ -44,7 +50,11 @@
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Fecha salida</mat-label>
-        <input matInput [matDatepicker]="pickerSalida" formControlName="fechaSalida" />
+        <input
+          matInput
+          [matDatepicker]="pickerSalida"
+          formControlName="fechaSalida"
+        />
         <mat-datepicker-toggle matSuffix [for]="pickerSalida"></mat-datepicker-toggle>
         <mat-datepicker #pickerSalida></mat-datepicker>
         <mat-error *ngIf="form.get('fechaSalida')?.hasError('required')">

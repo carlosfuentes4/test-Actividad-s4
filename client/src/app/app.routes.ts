@@ -16,6 +16,7 @@ export const routes: Routes = [
       { path: 'huespedes', loadComponent: () => import('./pages/huespedes/huespedes.component').then(m => m.HuespedesComponent) },
       { path: 'reportes', loadComponent: () => import('./pages/reportes/reportes.component').then(m => m.ReportesComponent) },
       { path: 'reservar', loadComponent: () => import('./pages/reservar/reservar.component').then(m => m.ReservarComponent) },
+      { path: 'reservar-habitacion', loadComponent: () => import('./pages/reservar-habitacion/reservar-habitacion.component').then(m => m.ReservarHabitacionComponent) },
     ],
   },
   { path: '**', redirectTo: 'login' },
