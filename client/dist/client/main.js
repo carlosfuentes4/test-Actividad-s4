@@ -97,10 +97,10 @@ const routes = [{
   pathMatch: 'full'
 }, {
   path: 'login',
-  loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(777), __webpack_require__.e(72), __webpack_require__.e(172), __webpack_require__.e(456), __webpack_require__.e(134), __webpack_require__.e(541), __webpack_require__.e(195)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/login/login.component */ 7195)).then(m => m.LoginComponent)
+  loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(278), __webpack_require__.e(72), __webpack_require__.e(172), __webpack_require__.e(456), __webpack_require__.e(541), __webpack_require__.e(195)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/login/login.component */ 7195)).then(m => m.LoginComponent)
 }, {
   path: 'register',
-  loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(777), __webpack_require__.e(72), __webpack_require__.e(172), __webpack_require__.e(456), __webpack_require__.e(975), __webpack_require__.e(134), __webpack_require__.e(570), __webpack_require__.e(541), __webpack_require__.e(175), __webpack_require__.e(739)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/register/register.component */ 2739)).then(m => m.RegisterComponent)
+  loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(278), __webpack_require__.e(72), __webpack_require__.e(172), __webpack_require__.e(456), __webpack_require__.e(975), __webpack_require__.e(570), __webpack_require__.e(541), __webpack_require__.e(175), __webpack_require__.e(739)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/register/register.component */ 2739)).then(m => m.RegisterComponent)
 }, {
   path: 'main',
   canActivate: [_guards_auth_guard__WEBPACK_IMPORTED_MODULE_0__.authGuard],
@@ -111,22 +111,22 @@ const routes = [{
     pathMatch: 'full'
   }, {
     path: 'dashboard',
-    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(777), __webpack_require__.e(199)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/dashboard/dashboard.component */ 5199)).then(m => m.DashboardComponent)
+    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(278), __webpack_require__.e(199)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/dashboard/dashboard.component */ 5199)).then(m => m.DashboardComponent)
   }, {
     path: 'habitaciones',
-    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(777), __webpack_require__.e(72), __webpack_require__.e(172), __webpack_require__.e(456), __webpack_require__.e(975), __webpack_require__.e(134), __webpack_require__.e(570), __webpack_require__.e(541), __webpack_require__.e(697), __webpack_require__.e(175), __webpack_require__.e(366), __webpack_require__.e(513)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/habitaciones/habitaciones.component */ 7513)).then(m => m.HabitacionesComponent)
+    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(278), __webpack_require__.e(72), __webpack_require__.e(172), __webpack_require__.e(456), __webpack_require__.e(975), __webpack_require__.e(570), __webpack_require__.e(541), __webpack_require__.e(697), __webpack_require__.e(175), __webpack_require__.e(366), __webpack_require__.e(513)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/habitaciones/habitaciones.component */ 7513)).then(m => m.HabitacionesComponent)
   }, {
     path: 'huespedes',
-    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(777), __webpack_require__.e(72), __webpack_require__.e(975), __webpack_require__.e(134), __webpack_require__.e(697), __webpack_require__.e(275)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/huespedes/huespedes.component */ 1275)).then(m => m.HuespedesComponent)
+    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(278), __webpack_require__.e(72), __webpack_require__.e(975), __webpack_require__.e(697), __webpack_require__.e(275)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/huespedes/huespedes.component */ 1275)).then(m => m.HuespedesComponent)
   }, {
     path: 'reportes',
-    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(777), __webpack_require__.e(301)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/reportes/reportes.component */ 9301)).then(m => m.ReportesComponent)
+    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(278), __webpack_require__.e(301)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/reportes/reportes.component */ 9301)).then(m => m.ReportesComponent)
   }, {
     path: 'reservar',
-    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(777), __webpack_require__.e(72), __webpack_require__.e(172), __webpack_require__.e(456), __webpack_require__.e(975), __webpack_require__.e(134), __webpack_require__.e(570), __webpack_require__.e(541), __webpack_require__.e(697), __webpack_require__.e(175), __webpack_require__.e(366), __webpack_require__.e(953), __webpack_require__.e(749)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/reservar/reservar.component */ 3749)).then(m => m.ReservarComponent)
+    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(278), __webpack_require__.e(72), __webpack_require__.e(172), __webpack_require__.e(456), __webpack_require__.e(975), __webpack_require__.e(570), __webpack_require__.e(541), __webpack_require__.e(697), __webpack_require__.e(175), __webpack_require__.e(366), __webpack_require__.e(953), __webpack_require__.e(749)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/reservar/reservar.component */ 3749)).then(m => m.ReservarComponent)
   }, {
     path: 'reservar-habitacion',
-    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(777), __webpack_require__.e(72), __webpack_require__.e(172), __webpack_require__.e(456), __webpack_require__.e(975), __webpack_require__.e(134), __webpack_require__.e(570), __webpack_require__.e(541), __webpack_require__.e(697), __webpack_require__.e(175), __webpack_require__.e(366), __webpack_require__.e(953), __webpack_require__.e(579)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/reservar-habitacion/reservar-habitacion.component */ 1579)).then(m => m.ReservarHabitacionComponent)
+    loadComponent: () => Promise.all(/*! import() */[__webpack_require__.e(646), __webpack_require__.e(278), __webpack_require__.e(72), __webpack_require__.e(172), __webpack_require__.e(456), __webpack_require__.e(975), __webpack_require__.e(570), __webpack_require__.e(541), __webpack_require__.e(697), __webpack_require__.e(175), __webpack_require__.e(366), __webpack_require__.e(953), __webpack_require__.e(579)]).then(__webpack_require__.bind(__webpack_require__, /*! ./pages/reservar-habitacion/reservar-habitacion.component */ 1579)).then(m => m.ReservarHabitacionComponent)
   }]
 }, {
   path: '**',
